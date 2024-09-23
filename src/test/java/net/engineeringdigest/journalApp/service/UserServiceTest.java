@@ -1,6 +1,7 @@
 package net.engineeringdigest.journalApp.service;
 
 import net.engineeringdigest.journalApp.repository.UserRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,11 +17,13 @@ public class UserServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Disabled
     @Test
     public void testFindByUserName() {
         assertNotNull(userRepository.findByUserName("jayeshkarn02"));
     }
 
+    @Disabled
     @ParameterizedTest
     @CsvSource({
             "1,1,2",

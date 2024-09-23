@@ -1,8 +1,11 @@
 package net.engineeringdigest.journalApp.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import net.engineeringdigest.journalApp.api.response.QuestionsResponse;
 import net.engineeringdigest.journalApp.entity.JournalEntry;
 import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.UserRepository;
+import net.engineeringdigest.journalApp.service.CodingQuestionService;
 import net.engineeringdigest.journalApp.service.JournalEntryService;
 import net.engineeringdigest.journalApp.service.UserService;
 import org.bson.types.ObjectId;
@@ -18,12 +21,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepostiory;
+
+    @Autowired
+    private CodingQuestionService codingQuestionService;
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
@@ -46,6 +53,17 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepostiory.deleteByUserName(authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/greeting")
+    public ResponseEntity<?> greeting() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        QuestionsResponse res = codingQuestionService.getQuestions();
+        String firstQuestion = res.getQuestions().get(0).getTitle();
+        String firstQuestionDesc = res.getQuestions().get(0).getDescription();
+
+        String response = ",\nTitle is : " + firstQuestion + " \nDescription is : " + firstQuestionDesc;
+        return new ResponseEntity<>("Hi " +authentication.getName() + response, HttpStatus.OK);
     }
 
 }
