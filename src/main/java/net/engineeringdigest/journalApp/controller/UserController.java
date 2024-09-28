@@ -57,13 +57,19 @@ public class UserController {
 
     @GetMapping("/greeting")
     public ResponseEntity<?> greeting() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        QuestionsResponse res = codingQuestionService.getQuestions();
-        String firstQuestion = res.getQuestions().get(0).getTitle();
-        String firstQuestionDesc = res.getQuestions().get(0).getDescription();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            QuestionsResponse res = codingQuestionService.getQuestions();
+            String firstQuestion = res.getQuestions().get(0).getTitle();
+            String firstQuestionDesc = res.getQuestions().get(0).getDescription();
 
-        String response = ",\nTitle is : " + firstQuestion + " \nDescription is : " + firstQuestionDesc;
-        return new ResponseEntity<>("Hi " +authentication.getName() + response, HttpStatus.OK);
+            String response = ",\nTitle is : " + firstQuestion + " \nDescription is : " + firstQuestionDesc;
+            return new ResponseEntity<>("Hi " +authentication.getName() + response, HttpStatus.OK);
+        } catch(Exception err) {
+            System.out.println(err);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 }
