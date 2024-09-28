@@ -14,6 +14,7 @@ import java.util.List;
 @Document(collection = "users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -23,6 +24,10 @@ public class User {
     String userName;
     @NonNull
     String password;
+
+    private String email;
+    Boolean sentimentAnalysis;
+
     @DBRef
     private List<JournalEntry> journalEntries = new ArrayList<>();
     private List<String> roles;
