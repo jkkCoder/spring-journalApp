@@ -25,12 +25,21 @@ public class CodingQuestionService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private RedisService redisService;
+
 
     public QuestionsResponse getQuestions() {
-        String API = appCache.APP_CACHE.get(AppCache.keys.QUESTION_API.toString()) + "question/filterQuestions?difficulty=&status=&userId=&itemsPerPage=15&page=1";
-        ResponseEntity<QuestionsResponse> res= restTemplate.exchange(API, HttpMethod.GET, null, QuestionsResponse.class);
-        QuestionsResponse body = res.getBody();
-        return body;
+        QuestionsResponse codingQuestion = redisService.get("coding_question", QuestionsResponse.class);
+        if(codingQuestion != null){
+            return codingQuestion;
+        }else {
+            String API = appCache.APP_CACHE.get(AppCache.keys.QUESTION_API.toString()) + "question/filterQuestions?difficulty=&status=&userId=&itemsPerPage=15&page=1";
+            ResponseEntity<QuestionsResponse> res= restTemplate.exchange(API, HttpMethod.GET, null, QuestionsResponse.class);
+            QuestionsResponse body = res.getBody();
+            redisService.set("coding_question", body, 30l);
+            return body;
+        }
     }
 
 }
